@@ -1,0 +1,334 @@
+{
+  "name": "Fireflies Meeting Summary",
+  "nodes": [
+    {
+      "parameters": {
+        "content": "## Przetworzenie treści transkryptu",
+        "height": 304,
+        "width": 880
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        7008,
+        992
+      ],
+      "typeVersion": 1,
+      "id": "0ccd9a97-dd24-4e16-abec-4f0630d843a9",
+      "name": "Sticky Note"
+    },
+    {
+      "parameters": {
+        "content": "## Dystrybucja i obsługa zadań",
+        "height": 480,
+        "width": 464
+      },
+      "type": "n8n-nodes-base.stickyNote",
+      "position": [
+        7904,
+        992
+      ],
+      "typeVersion": 1,
+      "id": "ed9e2d97-5929-4886-abcc-e992f55ea156",
+      "name": "Sticky Note1"
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.content }}",
+        "options": {
+          "systemMessage": "Jesteś asystentem AI, który przetwarza notatki ze spotkań i zarządza dystrybucją zadań.\n\nTwoje obowiązki:\n\n1. PRZEANALIZUJ treść notatki ze spotkania z dokumentu Google Doc.\n\n2. WYODRĘBNIJ wszystkie adresy email uczestników z treści notatki (pole Invited lub Attendees).\n\n3. WYODRĘBNIJ adres URL transkrypcji z notatki (szukaj pola URL: w dokumencie).\n\n4. SFORMATUJ notatkę ze spotkania jako HTML z zachowaniem poprawnej struktury:\n   - Użyj <h1> dla głównego tytułu.\n   - Dodaj adres URL transkrypcji natychmiast po tytule H1 jako klikalny link z tekstem Pełna transkrypcja: <p><a href=[URL]>Pełna transkrypcja</a></p>.\n   - Użyj <h2> dla nagłówków sekcji (np. Podsumowanie, Streszczenie w punktach itp.).\n   - Użyj <h3> dla nagłówków podsekcji.\n   - Użyj <p> dla akapitów.\n   - Użyj <ul> i <li> dla list punktowanych.\n   - Użyj <strong> dla wyróżnień/pogrubień.\n   - Zadbaj o odpowiednie odstępy i łamanie linii.\n\n5. WYŚLIJ sformatowaną notatkę HTML do KAŻDEGO uczestnika OSOBNO, używając narzędzia Wyślij do uczestników.\n   - Dla KAŻDEGO adresu email z listy uczestników, wywołaj narzędzie osobno\n   - Parametry narzędzia:\n     * participant_email: adres email konkretnego uczestnika\n     * meeting_subject: tytuł spotkania z pola Temat\n     * meeting_note_content: pełna notatka sformatowana jako HTML z linkiem do transkrypcji\n\n6. ZIDENTYFIKUJ wszystkie zadania (action items) przypisane do osoby Dariusz Młynarski.\n\n7. Dla KAŻDEGO zadania przypisanego do Dariusza Młynarskiego:\n   - Utwórz oddzielną wiadomość email do OmniFocus.\n   - Użyj narzędzia Wyślij do Omnifocus z parametrami:\n     * task_title: Krótka definicja zadania\n     * task_body: Szczegółowy opis zadania + rekomendacja AI/automatyzacji w formacie:\n       [Szczegółowy opis zadania]\n       \n       Wskazówka (Tip): [Rekomendacja, czy to zadanie można oddelegować narzędziom AI lub zautomatyzować, a jeśli tak – konkretne sugestie wdrożenia]\n\nWAŻNE:\n- Wyślij OSOBNY email do KAŻDEGO uczestnika z pełną notatką sformatowaną jako HTML.\n- Dołącz adres URL transkrypcji jako klikalny link bezpośrednio po tytule H1 w emailu HTML.\n- Wyślij ODDZIELNE maile do OmniFocus dla każdego zadania (jedno zadanie na jeden email).\n- Wyodrębnij adresy email bezpośrednio z treści notatki (pole Invited lub Attendees).\n- Uwzględnij tylko zadania przypisane konkretnie do: Dariusz Młynarski.\n- Upewnij się, że email HTML jest dobrze ustrukturyzowany, zawiera nagłówki, akapity i poprawne formatowanie.\n- ZAWSZE podawaj wartości dla wszystkich parametrów narzędzi - NIE pozostawiaj ich pustych lub undefined.\n- Jeśli nie ma uczestników lub zadań, NIE wywołuj odpowiednich narzędzi."
+        }
+      },
+      "id": "f0da8adf-7476-4301-b877-e86489c736c7",
+      "name": "Analyze Meeting Note & Send Emails",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        8032,
+        1088
+      ]
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 15,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "databaseId": {
+          "__rl": true,
+          "value": "2cbf3f5f-e69e-816e-bf4d-d2338a0b6b26",
+          "mode": "list",
+          "cachedResultName": "Dariusz's Fireflies Meetings",
+          "cachedResultUrl": "https://www.notion.so/2cbf3f5fe69e816ebf4dd2338a0b6b26"
+        }
+      },
+      "type": "n8n-nodes-base.notionTrigger",
+      "typeVersion": 1,
+      "position": [
+        7072,
+        1088
+      ],
+      "id": "974039f4-5cee-4bd2-af35-c19cd9cb56ed",
+      "name": "Notatka FF dodana do Notion",
+      "credentials": {
+        "notionApi": {
+          "id": "wtQ5TgFEr7k2NnRM",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "folderId": "1i9OtWYctBw5BWZFsBe5zDunhTh2Utnsk",
+        "title": "={{ $json.Title }} - {{ DateTime.fromISO($json.Date.start).toFormat('yyyy-MM-dd HH:mm') }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        7296,
+        1088
+      ],
+      "id": "29349eb6-395f-4893-a405-9714ec6ffac3",
+      "name": "Tworzenie GDoc",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "7Etj1FfR5bMX4E59",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "update",
+        "documentURL": "={{ $json.id }}",
+        "actionsUi": {
+          "actionFields": [
+            {
+              "action": "insert",
+              "text": "=Temat: {{ $('Notatka FF dodana do Notion').item.json.Title }}\nData: {{ DateTime.fromISO($('Notatka FF dodana do Notion').item.json.Date.start).toFormat('yyyy-MM-dd HH:mm') }}\nURL: {{ $('Notatka FF dodana do Notion').item.json.Transcript }}\nHost: {{ $('Notatka FF dodana do Notion').item.json.Host }}\nUczestnicy:\n{{ $('Notatka FF dodana do Notion').item.json.Invited.join('\\n') }}\n\n##Podsumowanie:\n\n{{ $('Notatka FF dodana do Notion').item.json.Overview }}\n\n##Streszczenie w punktach:\n\n{{ $('Notatka FF dodana do Notion').item.json['Bullet Notes'] }}\n\n##Streszczenie pełne:\n\n{{ $('Notatka FF dodana do Notion').item.json['New Summary'] }}\n\n##Action items / zadania i osoba odpowiedzialna:\n\n{{ $('Notatka FF dodana do Notion').item.json['Action Items'] }}"
+            }
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        7520,
+        1088
+      ],
+      "id": "38a3b07e-3c59-4ca4-a9ce-ce69c798cceb",
+      "name": "Dodanie treści do Doc",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "7Etj1FfR5bMX4E59",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "operation": "get",
+        "documentURL": "={{ $('Tworzenie GDoc').item.json.id }}"
+      },
+      "type": "n8n-nodes-base.googleDocs",
+      "typeVersion": 2,
+      "position": [
+        7744,
+        1088
+      ],
+      "id": "09df8791-d1f1-4564-a611-5a7009dadd34",
+      "name": "Pobranie treści",
+      "credentials": {
+        "googleDocsOAuth2Api": {
+          "id": "7Etj1FfR5bMX4E59",
+          "name": "Google Docs account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ String($fromAI('participant_email') || 'placeholder@example.com') }}",
+        "subject": "={{ String($fromAI('meeting_subject') || 'Meeting Notes') }}",
+        "message": "={{ String($fromAI('meeting_note_content') || 'No content') }}",
+        "options": {}
+      },
+      "id": "f651bbd0-c37c-4322-94ab-ff3f2dce36c0",
+      "name": "Wyślij do uczestników",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        8096,
+        1312
+      ],
+      "webhookId": "33fc85af-5cf5-4754-8936-f8775e7953f4",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "MB1IHeXzh73YBtF2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "dmlynarski.uw5sm@sync.omnigroup.com",
+        "subject": "={{ String($fromAI('task_title') || 'Task from meeting') }}",
+        "emailType": "text",
+        "message": "={{ String($fromAI('task_body') || 'No description') }}",
+        "options": {}
+      },
+      "id": "ed0c521c-b857-4839-ac44-ce994ac0fc80",
+      "name": "Wyślij do Omnifocus",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        8224,
+        1312
+      ],
+      "webhookId": "b770e2c6-a606-4353-80e4-b7960f9b03d7",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "MB1IHeXzh73YBtF2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-5-20250929",
+          "cachedResultName": "Claude Sonnet 4.5"
+        },
+        "options": {}
+      },
+      "id": "3caf1e9b-c277-44d6-9102-cfdf9af5c40b",
+      "name": "Analiza",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        7952,
+        1264
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "C9gF94cLFy7o1HXb",
+          "name": "Anthropic account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Notatka FF dodana do Notion": {
+      "main": [
+        [
+          {
+            "node": "Tworzenie GDoc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Tworzenie GDoc": {
+      "main": [
+        [
+          {
+            "node": "Dodanie treści do Doc",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dodanie treści do Doc": {
+      "main": [
+        [
+          {
+            "node": "Pobranie treści",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pobranie treści": {
+      "main": [
+        [
+          {
+            "node": "Analyze Meeting Note & Send Emails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wyślij do uczestników": {
+      "ai_tool": [
+        [
+          {
+            "node": "Analyze Meeting Note & Send Emails",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Wyślij do Omnifocus": {
+      "ai_tool": [
+        [
+          {
+            "node": "Analyze Meeting Note & Send Emails",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analiza": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analyze Meeting Note & Send Emails",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "timeSavedPerExecution": 10
+  },
+  "versionId": "c91587dc-9442-4bf6-a529-157d4e6d44fa",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e5041f641934aa792852904835b502128e2ce798bfd58498a58d29cc32ad3791"
+  },
+  "id": "65oIMSHcPrg2IdoW",
+  "tags": [
+    {
+      "updatedAt": "2025-12-07T19:11:29.649Z",
+      "createdAt": "2025-12-07T19:11:29.649Z",
+      "id": "dlcjIsNmmUQmjsXC",
+      "name": "automation"
+    },
+    {
+      "updatedAt": "2025-12-18T10:02:18.602Z",
+      "createdAt": "2025-12-18T10:02:18.602Z",
+      "id": "ucE2xSqoJOjmcPRF",
+      "name": "productivity"
+    }
+  ]
+}
