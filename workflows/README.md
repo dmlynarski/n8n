@@ -4,64 +4,41 @@ Ten katalog zawiera wszystkie pliki workflow n8n w formacie JSON.
 
 ## Struktura
 
-### 📁 production/
-Aktywne workflow działające w produkcji.
+Wszystkie workflow są przechowywane bezpośrednio w tym folderze - prosta, płaska struktura bez podkatalogów.
 
-**Charakterystyka:**
-- Przetestowane i stabilne
-- Aktywowane i działające
-- Krytyczne dla codziennych operacji
-
-### 📁 development/
-Workflow w fazie rozwoju i testowania.
-
-**Charakterystyka:**
-- Eksperymentalne
-- W trakcie testowania
-- Nieaktywne lub działające tylko w środowisku dev
-
-### 📁 templates/
-Szablony workflow do wielokrotnego użycia.
-
-**Charakterystyka:**
-- Wzorce do kopiowania
-- Najlepsze praktyki
-- Gotowe do dostosowania
+```
+workflows/
+├── Feb_17_Voice_Agent.json
+├── Feb_17th_Google_Maps.json
+├── Fireflies Meeting Summary.json
+├── Main_AI_Agent.json
+├── Notion Things Processing.json
+├── Personal_Contact_Finder.json
+└── README.md
+```
 
 ## Konwencje nazewnictwa
 
-Używaj opisowych nazw w formacie kebab-case:
+Używaj opisowych nazw, które jasno określają cel workflow.
 
-```
-[trigger]-[action]-[purpose].json
-```
+### Przykłady dobrych nazw:
 
-### Przykłady:
+- `Fireflies Meeting Summary.json` - ✅ jasne, opisowe
+- `Notion Things Processing.json` - ✅ jasne, opisowe
+- `Daily Sales Report.json` - ✅ prosty i zrozumiały
+- `Customer Signup Notification.json` - ✅ opisuje cel
 
-**Schedulowane zadania:**
-- `schedule-daily-sales-report.json`
-- `schedule-weekly-backup.json`
-- `schedule-hourly-data-sync.json`
+### Unikaj:
 
-**Webhooki:**
-- `webhook-customer-signup-notification.json`
-- `webhook-payment-processing.json`
-- `webhook-form-submission.json`
-
-**Manualne:**
-- `manual-database-cleanup.json`
-- `manual-data-export.json`
-- `manual-test-email-template.json`
-
-**Email triggers:**
-- `email-trigger-support-ticket.json`
-- `email-trigger-invoice-processing.json`
+- `workflow1.json` - ❌ nieopisowe
+- `test.json` - ❌ tymczasowe nazwy
+- `new.json` - ❌ niespecyficzne
 
 ## Eksportowanie workflow
 
 ```bash
 # Pojedynczy workflow
-n8n export:workflow --id=<workflow-id> --output=workflows/production/workflow-name.json
+n8n export:workflow --id=<workflow-id> --output=workflows/My-Workflow.json
 
 # Wszystkie workflow
 n8n export:workflow --all --output=workflows/
@@ -71,28 +48,16 @@ n8n export:workflow --all --output=workflows/
 
 ```bash
 # Pojedynczy workflow
-n8n import:workflow --input=workflows/production/workflow-name.json
+n8n import:workflow --input=workflows/My-Workflow.json
 
-# Wszystkie z katalogu
-n8n import:workflow --input=workflows/production/
+# Wszystkie workflow z katalogu
+n8n import:workflow --input=workflows/
 ```
 
 ## Dobre praktyki
 
-1. **Zawsze testuj** workflow przed przeniesieniem do production/
-2. **Dokumentuj zmiany** w commit message
-3. **Eksportuj regularnie** po każdej znaczącej zmianie
-4. **Używaj wersjonowania** - Git śledzi wszystkie zmiany
-5. **Przechowuj sekrety bezpiecznie** - nigdy nie commituj credentials
-
-## Przenoszenie workflow
-
-```bash
-# Z development do production
-git mv workflows/development/my-workflow.json workflows/production/
-git commit -m "Promote my-workflow to production"
-
-# Z production do templates (jako szablon)
-cp workflows/production/useful-pattern.json workflows/templates/template-useful-pattern.json
-# Usuń specyficzne dane i credentials przed commitem
-```
+1. **Używaj opisowych nazw** - nazwa pliku powinna jasno określać cel workflow
+2. **Eksportuj regularnie** po każdej znaczącej zmianie
+3. **Commituj z opisem** - wyjaśnij co zostało zmienione
+4. **Testuj przed commitowaniem** - upewnij się, że workflow działa
+5. **Credentials w n8n UI** - nigdy nie commituj sekretów do Git

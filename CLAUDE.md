@@ -10,16 +10,18 @@ This is an n8n workflows repository containing workflow definitions, guides, and
 
 ```
 n8n/
-├── CLAUDE.md                      # This file - project guidance
-├── README.md                      # Project documentation (Polish)
-├── n8n-workflow-guide.md         # Comprehensive n8n guide (Polish)
-├── .gitignore                    # Git ignore rules
-├── workflows/                    # n8n workflow JSON files
-│   ├── production/              # Active/production workflows
-│   ├── development/             # In-development workflows
-│   └── templates/               # Reusable workflow templates
-└── credentials/                 # Credential templates (NEVER commit actual secrets)
-    └── .gitkeep
+├── CLAUDE.md                          # This file - project guidance
+├── README.md                          # Project documentation (Polish)
+├── n8n-workflow-guide.md             # Comprehensive n8n guide (Polish)
+├── .gitignore                        # Git ignore rules
+└── workflows/                        # All n8n workflow JSON files
+    ├── Feb_17_Voice_Agent.json
+    ├── Feb_17th_Google_Maps.json
+    ├── Fireflies Meeting Summary.json
+    ├── Main_AI_Agent.json
+    ├── Notion Things Processing.json
+    ├── Personal_Contact_Finder.json
+    └── README.md                     # Workflow documentation
 ```
 
 ## Technology Stack
@@ -38,7 +40,7 @@ n8n/
 ### Exporting Workflows from n8n
 ```bash
 # Export a single workflow
-n8n export:workflow --id=<workflow-id> --output=workflows/production/workflow-name.json
+n8n export:workflow --id=<workflow-id> --output=workflows/My-Workflow.json
 
 # Export all workflows
 n8n export:workflow --all --output=workflows/
@@ -47,10 +49,10 @@ n8n export:workflow --all --output=workflows/
 ### Importing Workflows to n8n
 ```bash
 # Import a workflow
-n8n import:workflow --input=workflows/production/workflow-name.json
+n8n import:workflow --input=workflows/My-Workflow.json
 
-# Import all workflows from a directory
-n8n import:workflow --input=workflows/production/
+# Import all workflows from directory
+n8n import:workflow --input=workflows/
 ```
 
 ### Running n8n Locally
@@ -75,35 +77,32 @@ Access n8n at: `http://localhost:5678`
 ## Workflow Organization
 
 ### Directory Structure
-- `workflows/production/` - Active workflows running in production
-- `workflows/development/` - Experimental or in-progress workflows
-- `workflows/templates/` - Reusable workflow patterns and templates
+All workflow files are stored directly in the `workflows/` directory - simple, flat structure without subdirectories.
 
 ### Naming Conventions
-Use descriptive, kebab-case names that indicate:
-- **Trigger type**: `schedule-`, `webhook-`, `manual-`, `email-trigger-`
-- **Action**: `send-email-`, `sync-data-`, `process-`
-- **Purpose**: `-daily-report`, `-notification`, `-backup`
+Use descriptive names that clearly indicate the workflow's purpose:
 
 Examples:
-- `schedule-daily-sales-report.json`
-- `webhook-customer-signup-notification.json`
-- `manual-database-cleanup.json`
+- `Fireflies Meeting Summary.json` - ✅ Clear and descriptive
+- `Notion Things Processing.json` - ✅ Clear and descriptive
+- `Daily Sales Report.json` - ✅ Simple and understandable
+- `Customer Signup Notification.json` - ✅ Describes the purpose
 
 ## Security Best Practices
 
 ### Credentials Management
 - **NEVER** commit actual credentials, API keys, or secrets to git
-- Use n8n's built-in Credentials feature
-- Store credential templates in `credentials/` directory with placeholders
-- Actual credentials should be configured in n8n UI only
+- Use n8n's built-in Credentials feature in the n8n UI
+- Configure all credentials directly in n8n (Settings → Credentials)
+- Credentials are stored locally in n8n, not in workflow JSON files
 
 ### Sensitive Data
-- Workflow JSON may contain:
-  - Webhook URLs (can be sensitive)
-  - Database connection strings (use environment variables)
-  - API endpoints
 - Review workflows before committing to ensure no secrets are included
+- Workflow JSON should not contain:
+  - API keys or tokens
+  - Passwords
+  - Database credentials
+- Use n8n's credential system and environment variables
 
 ## Workflow Development Best Practices
 
@@ -175,22 +174,22 @@ return $input.all();
 
 Example commit messages:
 ```
-Add schedule-daily-report workflow
-Update webhook-signup: add email validation
-Fix error handling in sync-database workflow
+Add Daily Sales Report workflow
+Update Customer Signup: add email validation
+Fix error handling in Database Sync workflow
 ```
 
 ### Git Workflow
 ```bash
 # After updating workflow in n8n UI
-n8n export:workflow --id=123 --output=workflows/production/my-workflow.json
+n8n export:workflow --id=123 --output=workflows/My-Workflow.json
 
 # Review changes
-git diff workflows/production/my-workflow.json
+git diff workflows/My-Workflow.json
 
 # Commit
-git add workflows/production/my-workflow.json
-git commit -m "Update my-workflow: add error notifications"
+git add workflows/My-Workflow.json
+git commit -m "Update My Workflow: add error notifications"
 git push
 ```
 

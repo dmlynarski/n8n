@@ -6,18 +6,18 @@ Repozytorium zawierające workflow n8n oraz kompleksowy przewodnik po pracy z au
 
 ```
 n8n/
-├── CLAUDE.md                      # Instrukcje dla Claude Code
-├── README.md                      # Ten plik
-├── n8n-workflow-guide.md         # Kompleksowy przewodnik n8n (PL)
-├── .gitignore                    # Reguły Git ignore
-├── workflows/                    # Pliki workflow JSON
-│   ├── production/              # Aktywne workflow produkcyjne
-│   ├── development/             # Workflow w fazie rozwoju
-│   ├── templates/               # Szablony do wielokrotnego użycia
-│   └── README.md                # Dokumentacja workflows
-└── credentials/                 # Szablony credentials (NIE commituj sekretów!)
-    ├── .gitkeep
-    └── README.md                # Instrukcje bezpieczeństwa
+├── CLAUDE.md                          # Instrukcje dla Claude Code
+├── README.md                          # Ten plik
+├── n8n-workflow-guide.md             # Kompleksowy przewodnik n8n (PL)
+├── .gitignore                        # Reguły Git ignore
+└── workflows/                        # Wszystkie pliki workflow JSON
+    ├── Feb_17_Voice_Agent.json
+    ├── Feb_17th_Google_Maps.json
+    ├── Fireflies Meeting Summary.json
+    ├── Main_AI_Agent.json
+    ├── Notion Things Processing.json
+    ├── Personal_Contact_Finder.json
+    └── README.md                     # Dokumentacja workflows
 ```
 
 ## Szybki start
@@ -45,10 +45,10 @@ Dostęp: `http://localhost:5678`
 
 ```bash
 # Import pojedynczego workflow
-n8n import:workflow --input=workflows/production/workflow-name.json
+n8n import:workflow --input=workflows/My-Workflow.json
 
 # Import wszystkich workflow
-n8n import:workflow --input=workflows/production/
+n8n import:workflow --input=workflows/
 ```
 
 ### 3. Skonfiguruj credentials
@@ -70,34 +70,31 @@ n8n import:workflow --input=workflows/production/
 
 1. Utwórz workflow w n8n UI
 2. Przetestuj dokładnie
-3. Eksportuj do odpowiedniego katalogu:
+3. Eksportuj do katalogu workflows:
 
 ```bash
-# Development
-n8n export:workflow --id=<id> --output=workflows/development/workflow-name.json
-
-# Production (po przetestowaniu)
-n8n export:workflow --id=<id> --output=workflows/production/workflow-name.json
+n8n export:workflow --id=<id> --output=workflows/My-Workflow.json
 ```
 
 ### Konwencje nazewnictwa
 
-Format: `[trigger]-[action]-[purpose].json`
+Używaj opisowych nazw, które jasno określają cel workflow:
 
 Przykłady:
-- `schedule-daily-sales-report.json`
-- `webhook-customer-signup-notification.json`
-- `manual-database-cleanup.json`
+- `Fireflies Meeting Summary.json`
+- `Notion Things Processing.json`
+- `Daily Sales Report.json`
+- `Customer Signup Notification.json`
 
 ### Aktualizacja workflow
 
 ```bash
 # Po zmianach w n8n UI
-n8n export:workflow --id=<id> --output=workflows/production/workflow-name.json
+n8n export:workflow --id=<id> --output=workflows/My-Workflow.json
 
 # Commituj zmiany
-git add workflows/production/workflow-name.json
-git commit -m "Update workflow-name: opis zmian"
+git add workflows/My-Workflow.json
+git commit -m "Update My Workflow: opis zmian"
 git push
 ```
 
@@ -115,9 +112,6 @@ Pełny przewodnik po n8n zawierający:
 
 ### [workflows/README.md](./workflows/README.md)
 Dokumentacja organizacji workflow w tym projekcie.
-
-### [credentials/README.md](./credentials/README.md)
-⚠️ Krytyczne informacje o bezpieczeństwie credentials.
 
 ### [CLAUDE.md](./CLAUDE.md)
 Szczegółowe instrukcje dla Claude Code przy pracy z tym projektem.
