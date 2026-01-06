@@ -1,0 +1,542 @@
+{
+  "name": "Notion Things Processing",
+  "nodes": [
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "e4df788a-ffa0-440e-8f3e-3880ab255695",
+              "leftValue": "={{ $json['Ai Process'] }}",
+              "rightValue": "Process",
+              "operator": {
+                "type": "string",
+                "operation": "equals",
+                "name": "filter.operator.equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {
+          "ignoreCase": true
+        }
+      },
+      "type": "n8n-nodes-base.filter",
+      "typeVersion": 2.3,
+      "position": [
+        13408,
+        3600
+      ],
+      "id": "e4607fbf-bdfe-47c5-862c-5b373ee7869d",
+      "name": "Filter"
+    },
+    {
+      "parameters": {
+        "sendTo": "={{ String($fromAI('participant_email', 'Email address of meeting participant') || 'placeholder@example.com') }}",
+        "subject": "={{ String($fromAI('meeting_subject', 'Meeting subject/title') || 'Meeting Notes') }}",
+        "message": "={{ String($fromAI('meeting_note_content', 'Full meeting note content with transcript link after title') || 'No content') }}",
+        "options": {}
+      },
+      "id": "c346dfb3-c675-47b3-9a01-4bf6a90e4d34",
+      "name": "Send to People",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        14432,
+        3728
+      ],
+      "webhookId": "ac169f6b-57a5-499b-998b-70ee32f4d32d",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "MB1IHeXzh73YBtF2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "sendTo": "dmlynarski.uw5sm@sync.omnigroup.com",
+        "subject": "={{ String($fromAI('task_title', 'Brief task definition') || 'Task from meeting') }}",
+        "emailType": "text",
+        "message": "={{ String($fromAI('task_body', 'Task description with AI/automation tip') || 'No description provided') }}",
+        "options": {}
+      },
+      "id": "11f3f1a4-21a3-4ae7-9c14-ac046295ca2b",
+      "name": "Send Tasks",
+      "type": "n8n-nodes-base.gmailTool",
+      "typeVersion": 2.2,
+      "position": [
+        14560,
+        3728
+      ],
+      "webhookId": "3c75b971-c4de-4f50-bf39-718c02bff4ea",
+      "credentials": {
+        "gmailOAuth2": {
+          "id": "MB1IHeXzh73YBtF2",
+          "name": "Gmail account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "multipleMethods": true,
+        "path": "b7739dc1-7779-4fe1-9d1b-b4425d92ee46",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        13184,
+        3312
+      ],
+      "id": "983b0ca6-e405-4971-a088-6325c4ba7f08",
+      "name": "Triggered in Notion",
+      "webhookId": "b7739dc1-7779-4fe1-9d1b-b4425d92ee46",
+      "notesInFlow": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": {
+          "__rl": true,
+          "value": "248f3f5f-e69e-81fa-ba76-c5f15248a726",
+          "mode": "list",
+          "cachedResultName": "Things",
+          "cachedResultUrl": "https://www.notion.so/248f3f5fe69e81faba76c5f15248a726"
+        },
+        "limit": 10,
+        "simple": false,
+        "filterType": "manual",
+        "matchType": "allFilters",
+        "filters": {
+          "conditions": [
+            {
+              "key": "Ai Process|select",
+              "condition": "equals",
+              "selectValue": "Process"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        13408,
+        3312
+      ],
+      "id": "0d320552-f0fb-48a6-94d3-c92c2d3e2fe0",
+      "name": "Get Latest Things",
+      "alwaysOutputData": false,
+      "credentials": {
+        "notionApi": {
+          "id": "wtQ5TgFEr7k2NnRM",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 15,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "databaseId": {
+          "__rl": true,
+          "value": "248f3f5f-e69e-81fa-ba76-c5f15248a726",
+          "mode": "list",
+          "cachedResultName": "Things",
+          "cachedResultUrl": "https://www.notion.so/248f3f5fe69e81faba76c5f15248a726"
+        }
+      },
+      "type": "n8n-nodes-base.notionTrigger",
+      "typeVersion": 1,
+      "position": [
+        13184,
+        3504
+      ],
+      "id": "bd280d4e-b1f8-4632-b2b9-1c12eae56b3e",
+      "name": "New Thing",
+      "credentials": {
+        "notionApi": {
+          "id": "wtQ5TgFEr7k2NnRM",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "pollTimes": {
+          "item": [
+            {
+              "mode": "everyX",
+              "value": 15,
+              "unit": "minutes"
+            }
+          ]
+        },
+        "event": "pagedUpdatedInDatabase",
+        "databaseId": {
+          "__rl": true,
+          "value": "248f3f5f-e69e-81fa-ba76-c5f15248a726",
+          "mode": "list",
+          "cachedResultName": "Things",
+          "cachedResultUrl": "https://www.notion.so/248f3f5fe69e81faba76c5f15248a726"
+        }
+      },
+      "type": "n8n-nodes-base.notionTrigger",
+      "typeVersion": 1,
+      "position": [
+        13184,
+        3696
+      ],
+      "id": "60235aad-3675-4e1e-bd57-8e487631c2ed",
+      "name": "Updated Thing",
+      "credentials": {
+        "notionApi": {
+          "id": "wtQ5TgFEr7k2NnRM",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "get",
+        "pageId": {
+          "__rl": true,
+          "value": "={{ $json.id }}",
+          "mode": "id"
+        }
+      },
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        13632,
+        3504
+      ],
+      "id": "3eb85373-b013-446d-9b8f-9b0dbabaedb0",
+      "name": "Get a Thing",
+      "credentials": {
+        "notionApi": {
+          "id": "wtQ5TgFEr7k2NnRM",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "block",
+        "operation": "getAll",
+        "blockId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $json.id }}"
+        },
+        "returnAll": true,
+        "fetchNestedBlocks": true,
+        "simplifyOutput": false
+      },
+      "id": "1a6267ee-b862-4b62-b797-bd83fba0bbd6",
+      "name": "Fetch Content",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        13856,
+        3504
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "wtQ5TgFEr7k2NnRM",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsCode": "// Comprehensive Notion block content extractor with nested block support\nlet combinedContent = '';\n\n// DEBUG: Log initial input information\nconst allItems = $input.all();\nconsole.log('=== DEBUG: Input Analysis ===');\nconsole.log('Total items received:', allItems.length);\nif (allItems.length > 0) {\n  console.log('First item structure:', JSON.stringify(allItems[0].json, null, 2));\n  console.log('First item has children:', allItems[0].json.children ? 'YES' : 'NO');\n  if (allItems[0].json.children) {\n    console.log('First item children count:', allItems[0].json.children.length);\n  }\n}\nconsole.log('============================');\n\n// Tracking variables for debugging\nlet itemsWithChildren = 0;\nlet maxDepth = 0;\nlet blockTypes = [];\n\n// Function to recursively extract text from nested blocks\nfunction extractTextFromBlock(block, indentLevel = 0) {\n  const indent = '  '.repeat(indentLevel);\n  let text = '';\n  \n  // Track max depth\n  if (indentLevel > maxDepth) {\n    maxDepth = indentLevel;\n  }\n  \n  // Track block types (first 3 only)\n  if (blockTypes.length < 3 && block.type) {\n    blockTypes.push(block.type);\n  }\n  \n  // Helper to extract rich text array\n  const getRichText = (richTextArray) => {\n    if (!richTextArray || !Array.isArray(richTextArray)) return '';\n    return richTextArray.map(t => t.plain_text || '').join('');\n  };\n  \n  const type = block.type;\n  const blockData = block[type];\n  \n  if (!blockData) return text;\n  \n  // Extract text based on block type\n  switch(type) {\n    case 'paragraph':\n      const paraText = getRichText(blockData.text);\n      if (paraText.trim()) text += indent + paraText + '\\n\\n';\n      break;\n      \n    case 'heading_1':\n      const h1Text = getRichText(blockData.text);\n      if (h1Text.trim()) text += indent + '# ' + h1Text + '\\n\\n';\n      break;\n      \n    case 'heading_2':\n      const h2Text = getRichText(blockData.text);\n      if (h2Text.trim()) text += indent + '## ' + h2Text + '\\n\\n';\n      break;\n      \n    case 'heading_3':\n      const h3Text = getRichText(blockData.text);\n      if (h3Text.trim()) text += indent + '### ' + h3Text + '\\n\\n';\n      break;\n      \n    case 'bulleted_list_item':\n      const bulletText = getRichText(blockData.text);\n      if (bulletText.trim()) text += indent + '• ' + bulletText + '\\n';\n      break;\n      \n    case 'numbered_list_item':\n      const numberedText = getRichText(blockData.text);\n      if (numberedText.trim()) text += indent + '- ' + numberedText + '\\n';\n      break;\n      \n    case 'to_do':\n      const todoText = getRichText(blockData.text);\n      const checked = blockData.checked ? '[x]' : '[ ]';\n      if (todoText.trim()) text += indent + checked + ' ' + todoText + '\\n';\n      break;\n      \n    case 'toggle':\n      const toggleText = getRichText(blockData.text);\n      if (toggleText.trim()) text += indent + '▸ ' + toggleText + '\\n';\n      break;\n      \n    case 'quote':\n      const quoteText = getRichText(blockData.text);\n      if (quoteText.trim()) text += indent + '> ' + quoteText + '\\n\\n';\n      break;\n      \n    case 'code':\n      const codeText = getRichText(blockData.text);\n      const language = blockData.language || '';\n      if (codeText.trim()) {\n        text += indent + '```' + language + '\\n' + codeText + '\\n```\\n\\n';\n      }\n      break;\n      \n    case 'callout':\n      const calloutText = getRichText(blockData.text);\n      const icon = blockData.icon?.emoji || '💡';\n      if (calloutText.trim()) text += indent + icon + ' ' + calloutText + '\\n\\n';\n      break;\n      \n    case 'divider':\n      text += indent + '---\\n\\n';\n      break;\n      \n    case 'table_of_contents':\n      text += indent + '[Table of Contents]\\n\\n';\n      break;\n      \n    case 'breadcrumb':\n      text += indent + '[Breadcrumb]\\n\\n';\n      break;\n      \n    case 'column_list':\n    case 'column':\n      // Columns are handled through their children\n      break;\n      \n    case 'table':\n      text += indent + '[Table]\\n';\n      break;\n      \n    case 'table_row':\n      const cells = blockData.cells || [];\n      const rowText = cells.map(cell => getRichText(cell)).join(' | ');\n      if (rowText.trim()) text += indent + '| ' + rowText + ' |\\n';\n      break;\n      \n    case 'embed':\n    case 'bookmark':\n    case 'link_preview':\n      const url = blockData.url || '';\n      if (url) text += indent + '[Link: ' + url + ']\\n\\n';\n      break;\n      \n    case 'image':\n    case 'video':\n    case 'file':\n    case 'pdf':\n      const fileUrl = blockData.file?.url || blockData.external?.url || '';\n      const caption = getRichText(blockData.caption);\n      text += indent + '[' + type.toUpperCase() + ': ' + fileUrl + ']';\n      if (caption) text += ' - ' + caption;\n      text += '\\n\\n';\n      break;\n      \n    case 'equation':\n      const expression = blockData.expression || '';\n      if (expression) text += indent + '$$' + expression + '$$\\n\\n';\n      break;\n      \n    case 'synced_block':\n      // Synced blocks contain children\n      break;\n      \n    default:\n      // For any unknown block types, try to extract text if available\n      if (blockData.text) {\n        const unknownText = getRichText(blockData.text);\n        if (unknownText.trim()) text += indent + unknownText + '\\n\\n';\n      }\n  }\n  \n  // Process nested children recursively\n  if (block.children && Array.isArray(block.children) && block.children.length > 0) {\n    for (const child of block.children) {\n      text += extractTextFromBlock(child, indentLevel + 1);\n    }\n  }\n  \n  return text;\n}\n\n// Process all blocks\nfor (const item of allItems) {\n  if (item.json.children && Array.isArray(item.json.children) && item.json.children.length > 0) {\n    itemsWithChildren++;\n  }\n  combinedContent += extractTextFromBlock(item.json);\n}\n\n// Return combined content with debug information\nreturn [{\n  json: {\n    combinedContent: combinedContent.trim(),\n    blockCount: allItems.length,\n    totalItems: allItems.length,\n    itemsWithChildren: itemsWithChildren,\n    maxDepth: maxDepth,\n    sampleBlockTypes: blockTypes\n  }\n}];"
+      },
+      "id": "85da32ab-ef8f-4a36-9956-4242684b6216",
+      "name": "Combine Content",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        14080,
+        3504
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "={{ $json.combinedContent }}",
+        "options": {
+          "systemMessage": "## Instrukcja dla Agenta AI\n\nROLA  \nJesteś asystentem AI odpowiedzialnym za przetwarzanie notatek ze spotkań, organizowanie treści oraz zarządzanie dystrybucją zadań – wszystko w języku polskim, w koleżeńskim stylu komunikacji.\n\nZADANIA\n\n1. Przeanalizuj całą zawartość strony w Notion\n2. Zorganizuj i przekształć treść w spójny, logiczny i czytelny tekst:\n   - Jeśli notatki są chaotyczne lub nieuporządkowane – przekształć je w jasny, uporządkowany opis\n   - Zachowaj wszystkie istotne informacje\n   - Układaj treść w możliwie najlepszy sposób, nawet jeśli pierwotna struktura na to nie pozwala\n   - Popraw styl, język i ton wypowiedzi, zachowując naturalność i koleżeńską formę komunikacji\n3. Wyodrębnij adresy e-mail uczestników, jeśli są obecne w treści\n4. Jeśli adresy e-mail zostały znalezione:\n   - Skomponuj i wyślij jeden e-mail do wszystkich uczestników za pomocą Gmail Tool – Send to Participants\n   - Treść e-maila musi być w języku polskim i w formacie HTML, zawierająca:\n     - Główna uporządkowana treść\n     - Sekcja „Podjęte decyzje i ustalenia” – tylko jeśli decyzje lub ustalenia są obecne lub można je logicznie wywnioskować\n     - Sekcja „Zadania i action items” – tylko jeśli zadania są obecne lub logicznie wynikają z treści\n   - Używaj HTML:\n     - <h2>, <h3> – nagłówki\n     - <p> – akapity\n     - <ul>, <li> – listy\n5. Zidentyfikuj wszystkie zadania przypisane do „Dariusz Młynarski”\n6. Dla każdego z tych zadań:\n   - Utwórz osobny e-mail do OmniFocus za pomocą Gmail Tool – Send to OmniFocus\n   - Temat: Krótkie określenie zadania (po polsku)\n   - Treść:\n     - Akapit 1: Szczegółowy opis zadania (po polsku)\n     - Akapit 2: Rekomendacja, jak to zadanie można:\n       - Zrobić „od ręki” za pomocą dostępnych narzędzi (np. ChatGPT, Google Docs, itp.)\n       - Zautomatyzować lub obsłużyć agentem – zwłaszcza jeśli jest powtarzalne i proste do wdrożenia\n7. Zwróć końcową wersję zorganizowanej treści w swojej odpowiedzi – w języku polskim\n\nZASADY\n\n- Przekształcaj chaotyczne notatki w czytelny tekst\n- Stosuj logiczną strukturę i styl przyjazny, naturalny i koleżeński\n- Sekcje „Podjęte decyzje i ustalenia” oraz „Zadania i action items” dodawaj tylko wtedy, gdy realnie występują lub wynikają z treści\n- Wszystkie e-maile, zadania, nagłówki, rekomendacje – wyłącznie po polsku\n- Nigdy nie zmyślaj faktów ani nie dodawaj informacji, które nie wynikają bezpośrednio z treści\n- Zawsze oddzielne e-maile do OmniFocus dla każdego zadania Dariusza\n- Nie cenzuruj treści, nawet jeśli zawiera wulgaryzmy czy nieformalne sformułowania\n"
+        }
+      },
+      "id": "ebc0bfa9-93a4-410e-ad79-206273c8a8cd",
+      "name": "Analyse & Manage",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 3,
+      "position": [
+        14368,
+        3504
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": {
+          "__rl": true,
+          "mode": "id",
+          "value": "={{ $('Get a Thing').first().json.id }}"
+        },
+        "propertiesUi": {
+          "propertyValues": [
+            {
+              "key": "Ai Process|select",
+              "type": "select",
+              "selectValue": "=Processed"
+            },
+            {
+              "key": "Status|status",
+              "statusValue": "In progres"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "fef299b6-90ac-4324-960d-e4f6ead7d32d",
+      "name": "Update Status",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        14784,
+        3504
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "wtQ5TgFEr7k2NnRM",
+          "name": "Notion account"
+        }
+      },
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "mode": "list",
+          "value": "claude-sonnet-4-5-20250929",
+          "cachedResultName": "Claude Sonnet 4.5"
+        },
+        "options": {
+          "thinking": false
+        }
+      },
+      "id": "86cd4e30-81d2-4efe-9f36-0b3dbbfdaeda",
+      "name": "Brain",
+      "type": "@n8n/n8n-nodes-langchain.lmChatAnthropic",
+      "typeVersion": 1.3,
+      "position": [
+        14304,
+        3728
+      ],
+      "credentials": {
+        "anthropicApi": {
+          "id": "C9gF94cLFy7o1HXb",
+          "name": "Anthropic account"
+        }
+      }
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Filter": {
+      "main": [
+        [
+          {
+            "node": "Get a Thing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send to People": {
+      "ai_tool": [
+        [
+          {
+            "node": "Analyse & Manage",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Tasks": {
+      "ai_tool": [
+        [
+          {
+            "node": "Analyse & Manage",
+            "type": "ai_tool",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Triggered in Notion": {
+      "main": [
+        [
+          {
+            "node": "Get Latest Things",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Get Latest Things",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get Latest Things": {
+      "main": [
+        [
+          {
+            "node": "Get a Thing",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "New Thing": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Updated Thing": {
+      "main": [
+        [
+          {
+            "node": "Filter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Get a Thing": {
+      "main": [
+        [
+          {
+            "node": "Fetch Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Content": {
+      "main": [
+        [
+          {
+            "node": "Combine Content",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Combine Content": {
+      "main": [
+        [
+          {
+            "node": "Analyse & Manage",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyse & Manage": {
+      "main": [
+        [
+          {
+            "node": "Update Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Brain": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Analyse & Manage",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Update Status": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "timeSavedMode": "fixed",
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false,
+    "timeSavedPerExecution": 10
+  },
+  "versionId": "bc1d522e-dfb5-4e00-9645-e46995398660",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "e5041f641934aa792852904835b502128e2ce798bfd58498a58d29cc32ad3791"
+  },
+  "id": "OEXHLTZ79bF5p12v",
+  "tags": [
+    {
+      "updatedAt": "2025-12-07T19:11:29.649Z",
+      "createdAt": "2025-12-07T19:11:29.649Z",
+      "id": "dlcjIsNmmUQmjsXC",
+      "name": "automation"
+    },
+    {
+      "updatedAt": "2025-12-18T10:02:18.602Z",
+      "createdAt": "2025-12-18T10:02:18.602Z",
+      "id": "ucE2xSqoJOjmcPRF",
+      "name": "productivity"
+    }
+  ]
+}
