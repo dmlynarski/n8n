@@ -11,12 +11,12 @@ n8n/
 ├── n8n-workflow-guide.md             # Kompleksowy przewodnik n8n (PL)
 ├── .gitignore                        # Reguły Git ignore
 └── workflows/                        # Wszystkie pliki workflow JSON
-    ├── Feb_17_Voice_Agent.json
-    ├── Feb_17th_Google_Maps.json
+    ├── AI Superagent - Main.json
+    ├── Contact Finder.json
     ├── Fireflies Meeting Summary.json
-    ├── Main_AI_Agent.json
+    ├── Google Maps.json
     ├── Notion Things Processing.json
-    ├── Personal_Contact_Finder.json
+    ├── Voice Agent.json
     └── README.md                     # Dokumentacja workflows
 ```
 

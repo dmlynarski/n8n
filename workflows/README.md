@@ -8,12 +8,12 @@ Wszystkie workflow są przechowywane bezpośrednio w tym folderze - prosta, pła
 
 ```
 workflows/
-├── Feb_17_Voice_Agent.json
-├── Feb_17th_Google_Maps.json
+├── AI Superagent - Main.json
+├── Contact Finder.json
 ├── Fireflies Meeting Summary.json
-├── Main_AI_Agent.json
+├── Google Maps.json
 ├── Notion Things Processing.json
-├── Personal_Contact_Finder.json
+├── Voice Agent.json
 └── README.md
 ```
 
