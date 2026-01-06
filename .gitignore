@@ -1,0 +1,56 @@
+# n8n Workflows .gitignore
+
+# Credentials and Secrets
+credentials/*.json
+credentials/*.env
+.env
+.env.local
+*.key
+*.pem
+
+# n8n local data
+.n8n/
+*.db
+*.sqlite
+
+# Node modules (if using custom nodes)
+node_modules/
+package-lock.json
+yarn.lock
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS generated files
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Temporary files
+tmp/
+temp/
+*.tmp
+
+# Backup files
+*.backup
+*.bak
+workflows/**/*.backup.json
+
+# Keep credential templates but ignore actual credentials
+!credentials/.gitkeep
+!credentials/*-template.json
