@@ -46,6 +46,9 @@ tmp/
 temp/
 *.tmp
 
+# Claude Code memory/cache
+n8n/
+
 # Backup files
 *.backup
 *.bak
